@@ -9,7 +9,14 @@ function lookup(item_id) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 // TODO parse JSON response
 
-                // TODO fill in form fields
+                var result = JSON.parse(xhr.responseText);
+                document.getElementById("name").value = result.name;
+                document.getElementById("brand").value = result.brand;
+                document.getElementById("size_x").value = result.size_x;
+                document.getElementById("size_y").value = result.size_y;
+                document.getElementById("size_z").value = result.size_z;
+                document.getElementById("price").value = result.price;
+                document.getElementById("available").checked = result.available;
             }
         };
         xhr.open("GET", "/inventory?item_id=" + item_id, true);

@@ -1,7 +1,7 @@
 """
 Exercise #1: Checking username
 """
-
+import re
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -12,13 +12,19 @@ def check_username():
     # this list contains the usernames taken
     USERNAMES = ["johnsmith", "maryjane", "johndoe", "smith"]
 
-    # TODO
-    # get the username parameter from the URL (/check_username?username=xxx)
-    # check that
-    # - The username is minimum 3 characters long;
-    # - It contains only alphanumerical characters (letters or digits);
-    # - It has not been used before (for now a static list contains the used usernames).
-
+    username = request.args.get("username", None)
+    print(username)
+    if username:
+        if len(username) < 3:
+            print("too short")
+            return "Username is too short."
+        elif not username.isalnum():
+            print("is not alnum")
+            return "Username may only contain letters or digits."
+        elif username in USERNAMES:
+            print("taken")
+            return "Name is already taken."
+    print("ok")
     return ""
 
 
