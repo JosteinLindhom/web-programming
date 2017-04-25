@@ -31,8 +31,14 @@
     {% for product_id, qt in cart.items() %}
         <tr>
             <td>{{ product_id }}</td>
-            <td>{{ qt }}</td>
-            <td><a href="">remove</a></td>
+            <td>
+                <form action="{{url_for('modify')}}", method="POST">
+                    <input type="hidden" name="product_id" value="{{product_id}}">
+                    <input type="number" name="qt" value="{{qt}}" min="1" max="100">
+                    <input type="submit" value="Modify">
+                </form>
+            </td>
+            <td><a href="{{ url_for('remove')}}?product_id={{ product_id }}">remove</a></td>
         </tr>
     {% endfor %}
     </tbody>

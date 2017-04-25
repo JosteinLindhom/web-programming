@@ -22,7 +22,30 @@
 <main>
     {# TODO display error and success messages #}
 
-    The main content comes here. Lorem ipsum...
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+            <div class="error">
+                    <ul>
+                        {% for msg in errors %}
+                        <li>{{ msg }}</li>
+                        {% endfor %}
+                    </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% with messages = get_flashed_messages(category_filter=["success"]) %}
+        {% if messages %}
+            <div class="success">
+                <ul>
+                    {% for msg in messages %}
+                        <li>{{ msg }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}
+
 </main>
 
 </body>

@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, abo
 
 app = Flask(__name__)
 app.debug = True  # only for development!
-app.secret_key = "any random string"
+app.secret_key = "jW6nx1jaFeWMgMZoDJXNIV3FFmIEG0sUaLPU4ezsp7u04ztDLtjIiqk0Zl9sRMYtsSXyAEsfbTA1DYf4ZWETjA=="
 
 
 class ShoppingCart:
@@ -20,6 +20,9 @@ class ShoppingCart:
         """Adds a product to the shopping cart or increases its quantity if it's already there."""
         self.__cart[product_id] = self.__cart.get(product_id, 0) + qt
 
+    def set(self, product_id, qt):
+        """Sets the quantity of a given product"""
+        self.__cart[product_id] = qt
     def remove(self, product_id):
         """Removes a product from the shopping cart."""
         self.__cart.pop(product_id)
@@ -35,21 +38,58 @@ class ShoppingCart:
 
 @app.route("/")
 def index():
-    # TODO show cart contents
-    return render_template("page.html", cart=dict())
+    cart = ShoppingCart(session.get("cart", dict()))
+    return render_template("page.html", cart=cart.contents())
 
 
 @app.route("/add", methods=["POST"])
 def add():
-    # TODO add product to cart
+    product_id = request.form.get("product_id", None)
+    qt = int(request.form.get("qt", 0))
+
+    if product_id and qt:
+        cart = ShoppingCart(session.get("cart", dict()))
+        cart.add(product_id, qt)
+        session["cart"] = cart.contents()
+        flash("Product added to cart")
+    else:
+        abort(400)
     return redirect(url_for("index"))
 
 
 @app.route("/remove", methods=["GET"])
 def remove():
-    # TODO remove product from cart
+    product_id = request.args.get("product_id", None)
+    if product_id:
+        cart = ShoppingCart(session.get("cart", dict()))
+        if cart.contains(product_id):
+            cart.remove(product_id)
+            session["cart"] = cart.contents()
+            flash("Removed product from cart")
+        else:
+            abort(400)
+    else:
+        abort(400)
     return redirect(url_for("index"))
 
+@app.route("/modify", methods=["POST"])
+def modify():
+    product_id = request.form.get("product_id", None)
+    qt = int(request.form.get("qt", 0))
+
+    if product_id and qt:
+        cart = ShoppingCart(session.get("cart", dict()))
+        cart.set(product_id, qt)
+        session["cart"] = cart.contents()
+        flash("Quantity modified")
+    else:
+        abort(400)
+    return redirect(url_for("index"))
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    return render_template("400.html"), 400
 
 if __name__ == "__main__":
     app.run()
