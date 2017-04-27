@@ -3,7 +3,7 @@ Exercise #2: Inventory
 """
 
 from flask import Flask, request
-
+import json
 app = Flask(__name__)
 
 
@@ -41,10 +41,11 @@ def inventory():
     }
 
     item_id = request.args.get("item_id", None)
-
+    print(item_id)
+    print(type(item_id))
     # TODO Complete
-
-    return ""
+    print(ITEMS.get(item_id))
+    return json.dumps(ITEMS.get(item_id))
 
 
 @app.route("/")

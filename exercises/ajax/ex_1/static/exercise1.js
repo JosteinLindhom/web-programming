@@ -8,10 +8,13 @@ function checkUsername(username) {
     xhr.onreadystatechange = function() {
         /* readyState = 4 means that the response has been completed
          * status = 200 indicates that the request was successfully completed */
+        alert(xhr.readyState);
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // TODO complete
+            var result = xhr.responseText;
+            document.getElementById("username_status").innerHTML = result;
         }
     };
     /* send the request using GET */
-    // TODO complete
+    xhr.open("GET", "/check_username?username=" + username, true);
+    xhr.send();
 }
